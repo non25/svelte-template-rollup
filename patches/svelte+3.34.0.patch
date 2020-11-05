@@ -1,0 +1,43 @@
+diff --git a/node_modules/svelte/compiler.js b/node_modules/svelte/compiler.js
+index e3b10fe..3ec0df0 100644
+--- a/node_modules/svelte/compiler.js
++++ b/node_modules/svelte/compiler.js
+@@ -21509,6 +21509,7 @@
+ 	                        change_object = value_object;
+ 	                    }
+ 	                    else {
++	                        name === 'class' && component.stylesheet.apply(this.node);
+ 	                        const obj = x `{ ${name}: ${attr.get_value(block)} }`;
+ 	                        initial_props.push(obj);
+ 	                        change_object = obj;
+@@ -28157,6 +28158,7 @@
+ 	        this.bindings = [];
+ 	        this.handlers = [];
+ 	        this.lets = [];
++	        this.classes = [];
+ 	        if (info.name !== 'svelte:component' && info.name !== 'svelte:self') {
+ 	            const name = info.name.split('.')[0]; // accommodate namespaces
+ 	            component.warn_if_undefined(name, info, scope);
+@@ -28232,6 +28234,22 @@
+ 	            });
+ 	        });
+ 	        this.children = map_children(component, this, this.scope, info.children);
++	        component.stylesheet.apply(this);
++	    }
++
++	    add_css_class(id = this.component.stylesheet.id) {
++	        const class_attribute = this.attributes.find(a => a.name === 'class');
++	        if (class_attribute && !class_attribute.is_true) {
++	            if (class_attribute.chunks.length === 1 && class_attribute.chunks[0].type === 'Text') {
++	                class_attribute.chunks[0].data += ` ${id}`;
++	            }
++	            else {
++	                class_attribute.chunks.push(new Text$1(this.component, this, this.scope, {
++	                    type: 'Text',
++	                    data: ` ${id}`
++	                }));
++	            }
++	        }
+ 	    }
+ 	}
+ 
