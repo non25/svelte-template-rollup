@@ -1,8 +1,8 @@
 diff --git a/node_modules/svelte/compiler.js b/node_modules/svelte/compiler.js
-index e3b10fe..3ec0df0 100644
+index 23c90b5..38586fd 100644
 --- a/node_modules/svelte/compiler.js
 +++ b/node_modules/svelte/compiler.js
-@@ -21509,6 +21509,7 @@
+@@ -21484,6 +21484,7 @@
  	                        change_object = value_object;
  	                    }
  	                    else {
@@ -10,7 +10,7 @@ index e3b10fe..3ec0df0 100644
  	                        const obj = x `{ ${name}: ${attr.get_value(block)} }`;
  	                        initial_props.push(obj);
  	                        change_object = obj;
-@@ -28157,6 +28158,7 @@
+@@ -25756,6 +25757,7 @@
  	        this.bindings = [];
  	        this.handlers = [];
  	        this.lets = [];
@@ -18,13 +18,15 @@ index e3b10fe..3ec0df0 100644
  	        if (info.name !== 'svelte:component' && info.name !== 'svelte:self') {
  	            const name = info.name.split('.')[0]; // accommodate namespaces
  	            component.warn_if_undefined(name, info, scope);
-@@ -28232,6 +28234,22 @@
+@@ -25866,10 +25868,25 @@
  	            });
- 	        });
- 	        this.children = map_children(component, this, this.scope, info.children);
+ 	        }
+ 	        this.children = map_children(component, this, this.scope, children);
 +	        component.stylesheet.apply(this);
-+	    }
-+
+ 	    }
+ 	    get slot_template_name() {
+ 	        return this.attributes.find(attribute => attribute.name === 'slot').get_static_value();
+ 	    }
 +	    add_css_class(id = this.component.stylesheet.id) {
 +	        const class_attribute = this.attributes.find(a => a.name === 'class');
 +	        if (class_attribute && !class_attribute.is_true) {
@@ -38,6 +40,7 @@ index e3b10fe..3ec0df0 100644
 +	                }));
 +	            }
 +	        }
- 	    }
++	    }
  	}
- 
+ 	function not_whitespace_text(node) {
+ 	    return !(node.type === 'Text' && /^\s+$/.test(node.data));
